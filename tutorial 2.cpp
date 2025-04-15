@@ -13,8 +13,12 @@ void mergeArray (int arr1[], int arr2[],int arr3[], int n){
     for (int i = 0; i < 2 * n; i++) {
         cout << arr3[i] << " ";
     }
+}
+void printArray(int arr1[], int n) {
     cout << endl;
-    
+    for (int i = 0; i < n; i++) {
+        cout << *(arr1+i) << " ";
+    }
 }
 
 int main(){
@@ -24,4 +28,5 @@ int main(){
    int arr3[n+n];
 
     mergeArray(arr1, arr2, arr3, n);
+    printArray(arr1, n);
 }
