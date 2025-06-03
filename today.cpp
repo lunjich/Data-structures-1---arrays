@@ -1,103 +1,96 @@
 #include <iostream>
-#include <vector>
 using namespace std;
 
-void printArray(vector<int>& arr, const string& msg) {
+// Print array
+void printArray(int arr[], int size, const string& msg) {
     cout << msg << ": ";
-    for (int num : arr)
-        cout << num << " ";
+    for (int i = 0; i < size; i++)
+        cout << arr[i] << " ";
     cout << endl;
 }
 
-// Merge function for ascending order
-void mergeAscending(vector<int>& arr, int left, int mid, int right) {
-    vector<int> leftPart(arr.begin() + left, arr.begin() + mid + 1);
-    vector<int> rightPart(arr.begin() + mid + 1, arr.begin() + right + 1);
+// Merge two halves (ascending)
+void mergeAsc(int arr[], int left, int mid, int right) {
+    int temp[100]; // temp array
+    int i = left;
+    int j = mid + 1;
+    int k = 0;
 
-    int i = 0, j = 0, k = left;
-    while (i < leftPart.size() && j < rightPart.size()) {
-        if (leftPart[i] <= rightPart[j]) {
-            arr[k++] = leftPart[i++];
-        } else {
-            arr[k++] = rightPart[j++];
-        }
+    while (i <= mid && j <= right) {
+        if (arr[i] < arr[j])
+            temp[k++] = arr[i++];
+        else
+            temp[k++] = arr[j++];
     }
-    while (i < leftPart.size())
-        arr[k++] = leftPart[i++];
-    while (j < rightPart.size())
-        arr[k++] = rightPart[j++];
 
-    printArray(arr, "After merging (asc)");
+    while (i <= mid) temp[k++] = arr[i++];
+    while (j <= right) temp[k++] = arr[j++];
+
+    for (int m = 0; m < k; m++)
+        arr[left + m] = temp[m];
+
+    printArray(arr, right + 1, "Step (Asc)");
 }
 
-// Merge function for descending order
-void mergeDescending(vector<int>& arr, int left, int mid, int right) {
-    vector<int> leftPart(arr.begin() + left, arr.begin() + mid + 1);
-    vector<int> rightPart(arr.begin() + mid + 1, arr.begin() + right + 1);
+// Merge sort (ascending)
+void mergeSortAsc(int arr[], int left, int right) {
+    if (left >= right) return;
 
-    int i = 0, j = 0, k = left;
-    while (i < leftPart.size() && j < rightPart.size()) {
-        if (leftPart[i] >= rightPart[j]) {
-            arr[k++] = leftPart[i++];
-        } else {
-            arr[k++] = rightPart[j++];
-        }
-    }
-    while (i < leftPart.size())
-        arr[k++] = leftPart[i++];
-    while (j < rightPart.size())
-        arr[k++] = rightPart[j++];
+    int mid = (left + right) / 2;
 
-    printArray(arr, "After merging (desc)");
+    mergeSortAsc(arr, left, mid);
+    mergeSortAsc(arr, mid + 1, right);
+    mergeAsc(arr, left, mid, right);
 }
 
-// Merge sort recursive function for ascending
-void mergeSortAscending(vector<int>& arr, int left, int right) {
-    if (left < right) {
-        int mid = left + (right - left) / 2;
+// Merge two halves (descending)
+void mergeDesc(int arr[], int left, int mid, int right) {
+    int temp[100];
+    int i = left;
+    int j = mid + 1;
+    int k = 0;
 
-        cout << "Dividing (asc): ";
-        for (int i = left; i <= right; i++) cout << arr[i] << " ";
-        cout << endl;
-
-        mergeSortAscending(arr, left, mid);
-        mergeSortAscending(arr, mid + 1, right);
-        mergeAscending(arr, left, mid, right);
+    while (i <= mid && j <= right) {
+        if (arr[i] > arr[j])
+            temp[k++] = arr[i++];
+        else
+            temp[k++] = arr[j++];
     }
+
+    while (i <= mid) temp[k++] = arr[i++];
+    while (j <= right) temp[k++] = arr[j++];
+
+    for (int m = 0; m < k; m++)
+        arr[left + m] = temp[m];
+
+    printArray(arr, right + 1, "Step (Desc)");
 }
 
-// Merge sort recursive function for descending
-void mergeSortDescending(vector<int>& arr, int left, int right) {
-    if (left < right) {
-        int mid = left + (right - left) / 2;
+// Merge sort (descending)
+void mergeSortDesc(int arr[], int left, int right) {
+    if (left >= right) return;
 
-        cout << "Dividing (desc): ";
-        for (int i = left; i <= right; i++) cout << arr[i] << " ";
-        cout << endl;
+    int mid = (left + right) / 2;
 
-        mergeSortDescending(arr, left, mid);
-        mergeSortDescending(arr, mid + 1, right);
-        mergeDescending(arr, left, mid, right);
-    }
+    mergeSortDesc(arr, left, mid);
+    mergeSortDesc(arr, mid + 1, right);
+    mergeDesc(arr, left, mid, right);
 }
 
 int main() {
-    vector<int> arr1 = {38, 27, 43, 3, 9, 82, 10};
-    vector<int> arr2 = arr1; // Copy for descending
+    int arr1[] = {38, 27, 43, 3, 9, 82, 10};
+    int arr2[] = {38, 27, 43, 3, 9, 82, 10};
+    int size = sizeof(arr1) / sizeof(arr1[0]);
 
-    cout << "Original Array: ";
-    for (int x : arr1) cout << x << " ";
-    cout << "\n\n--- Ascending Sort ---\n";
-    mergeSortAscending(arr1, 0, arr1.size() - 1);
+    cout << "--- Ascending Order ---" << endl;
+    printArray(arr1, size, "Original");
+    mergeSortAsc(arr1, 0, size - 1);
+    printArray(arr1, size, "Sorted Asc");
 
-    cout << "\nSorted in Ascending: ";
-    for (int x : arr1) cout << x << " ";
-    cout << "\n\n--- Descending Sort ---\n";
-    mergeSortDescending(arr2, 0, arr2.size() - 1);
-
-    cout << "\nSorted in Descending: ";
-    for (int x : arr2) cout << x << " ";
-    cout << endl;
+    cout << "\n--- Descending Order ---" << endl;
+    printArray(arr2, size, "Original");
+    mergeSortDesc(arr2, 0, size - 1);
+    printArray(arr2, size, "Sorted Desc");
 
     return 0;
 }
