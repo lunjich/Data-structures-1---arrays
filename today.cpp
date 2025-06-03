@@ -1,96 +1,52 @@
 #include <iostream>
 using namespace std;
 
-// Print array
-void printArray(int arr[], int size, const string& msg) {
-    cout << msg << ": ";
-    for (int i = 0; i < size; i++)
+void printArray(int arr[], int n) {
+    for (int i = 0; i < n; i++)
         cout << arr[i] << " ";
     cout << endl;
 }
 
-// Merge two halves (ascending)
-void mergeAsc(int arr[], int left, int mid, int right) {
-    int temp[100]; // temp array
-    int i = left;
-    int j = mid + 1;
-    int k = 0;
+void merge(int arr[], int first, int mid, int last) {
+    int first1 = first, last1 = mid;
+    int first2 = mid + 1, last2 = last;
 
-    while (i <= mid && j <= right) {
-        if (arr[i] < arr[j])
-            temp[k++] = arr[i++];
+    int temp[last - first + 1];
+    int index = 0;
+
+    while (first1 <= last1 && first2 <= last2) {
+        if (arr[first1] <= arr[first2])
+            temp[index++] = arr[first1++];
         else
-            temp[k++] = arr[j++];
+            temp[index++] = arr[first2++];
     }
 
-    while (i <= mid) temp[k++] = arr[i++];
-    while (j <= right) temp[k++] = arr[j++];
+    while (first1 <= last1)
+        temp[index++] = arr[first1++];
 
-    for (int m = 0; m < k; m++)
-        arr[left + m] = temp[m];
+    while (first2 <= last2)
+        temp[index++] = arr[first2++];
 
-    printArray(arr, right + 1, "Step (Asc)");
+    for (int i = 0; i < index; i++)
+        arr[first + i] = temp[i];
 }
 
-// Merge sort (ascending)
-void mergeSortAsc(int arr[], int left, int right) {
-    if (left >= right) return;
-
-    int mid = (left + right) / 2;
-
-    mergeSortAsc(arr, left, mid);
-    mergeSortAsc(arr, mid + 1, right);
-    mergeAsc(arr, left, mid, right);
-}
-
-// Merge two halves (descending)
-void mergeDesc(int arr[], int left, int mid, int right) {
-    int temp[100];
-    int i = left;
-    int j = mid + 1;
-    int k = 0;
-
-    while (i <= mid && j <= right) {
-        if (arr[i] > arr[j])
-            temp[k++] = arr[i++];
-        else
-            temp[k++] = arr[j++];
+void mergeSort(int arr[], int first, int last) {
+    if (first < last) {
+        int mid = (first + last) / 2;
+        mergeSort(arr, first, mid);
+        mergeSort(arr, mid + 1, last);
+        merge(arr, first, mid, last);
     }
-
-    while (i <= mid) temp[k++] = arr[i++];
-    while (j <= right) temp[k++] = arr[j++];
-
-    for (int m = 0; m < k; m++)
-        arr[left + m] = temp[m];
-
-    printArray(arr, right + 1, "Step (Desc)");
-}
-
-// Merge sort (descending)
-void mergeSortDesc(int arr[], int left, int right) {
-    if (left >= right) return;
-
-    int mid = (left + right) / 2;
-
-    mergeSortDesc(arr, left, mid);
-    mergeSortDesc(arr, mid + 1, right);
-    mergeDesc(arr, left, mid, right);
 }
 
 int main() {
-    int arr1[] = {38, 27, 43, 3, 9, 82, 10};
-    int arr2[] = {38, 27, 43, 3, 9, 82, 10};
-    int size = sizeof(arr1) / sizeof(arr1[0]);
+    int n = 8;
+    int arr[n] = {2, 7, 5, 8, 3, 1, 6, 4};
 
-    cout << "--- Ascending Order ---" << endl;
-    printArray(arr1, size, "Original");
-    mergeSortAsc(arr1, 0, size - 1);
-    printArray(arr1, size, "Sorted Asc");
-
-    cout << "\n--- Descending Order ---" << endl;
-    printArray(arr2, size, "Original");
-    mergeSortDesc(arr2, 0, size - 1);
-    printArray(arr2, size, "Sorted Desc");
+    printArray(arr, n);
+    mergeSort(arr, 0, n - 1);
+    printArray(arr, n);
 
     return 0;
 }
